@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WALiKU Form</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .form-wrapper {
+    background: #fff;
+    width: 560px;
+    border: 1px solid #ccc;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 16px;
+    gap: 10px;
+  }
+  .logo-icon { width: 72px; height: 72px; }
+  .logo-text { font-size: 26px; font-weight: bold; letter-spacing: 3px; color: #8dc63f; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    background: #d9e8f5;
+    padding: 6px 10px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #1a5276;
+    border-top: 1px solid #aac8e0;
+    border-bottom: 1px solid #aac8e0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .section-header .arrow { color: #1a5276; font-size: 12px; }
+
+  /* Orange section headers (sub-forms) */
+  .section-header-orange {
+    background: #fde8d8;
+    padding: 6px 10px;
+    font-weight: bold;
+    font-size: 13px;
+    color: #c0390b;
+    border-top: 1px solid #f0b48a;
+    border-bottom: 1px solid #f0b48a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-header-orange .arrow { color: #c0390b; font-size: 12px; }
+
+  /* General Info top label */
+  .gen-info-label { background: #1a5276; color: #fff; padding: 5px 10px; font-weight: bold; font-size: 12px; }
+  .gen-info-sub { background: #1a5276; color: #cde; padding: 0 10px 5px; font-size: 10px; font-style: italic; }
+
+  /* ── GRID FIELDS ── */
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  .field-cell { border: 1px solid #ddd; padding: 6px 8px; position: relative; }
+  .field-cell label { display: block; font-size: 10px; color: #555; margin-bottom: 2px; }
+  .field-cell input[type="text"] { width: 100%; border: none; outline: none; font-size: 12px; background: transparent; color: #222; }
+  .field-cell .hint-text { font-size: 10px; color: #e07b39; font-style: italic; margin-top: 2px; }
+
+  .required-star { color: red; font-size: 12px; position: absolute; top: 5px; right: 6px; }
+
+  .date-row { display: flex; align-items: center; gap: 6px; }
+  .refresh-icon { color: #555; font-size: 14px; cursor: pointer; }
+
+  /* ── RISK CONTEXT ── */
+  .risk-inner { padding: 8px 10px; border: 1px solid #ddd; border-top: none; }
+  .risk-sub-label { font-size: 10px; color: #888; margin-bottom: 8px; font-style: italic; }
+
+  /* ── GENERIC FIELD GROUPS ── */
+  .field-group { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .field-group legend { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 6px; display: block; }
+
+  .radio-option { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 4px; color: #333; }
+  .radio-option input[type="radio"] { margin: 0; accent-color: #1a5276; }
+
+  .text-input-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .text-input-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .text-input-field input[type="text"] { width: 100%; border: none; outline: none; font-size: 12px; color: #aaa; }
+
+  /* Textarea fields */
+  .textarea-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .textarea-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .textarea-field .sub-hint { font-size: 10px; color: #aaa; font-style: italic; display: block; margin-bottom: 4px; }
+  .textarea-field textarea {
+    width: 100%; border: none; outline: none; font-size: 12px; color: #555;
+    resize: none; min-height: 56px; background: transparent; font-family: Arial, sans-serif;
+  }
+  .edit-icon { position: absolute; bottom: 6px; right: 8px; color: #999; font-size: 13px; }
+
+  /* ── ACTIVITY ── */
+  .activity-inner { padding: 8px 10px; border: 1px solid #ddd; border-top: none; }
+
+  /* ── DYNAMIC SUB-FORMS ── */
+  .dynamic-section { display: none; }
+  .dynamic-section.active { display: block; }
+
+  /* Info banner (grey box) */
+  .info-banner {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: #333;
+  }
+  .info-banner .check-item { margin-bottom: 3px; }
+  .info-banner .check-item::before { content: "✓ "; color: #555; }
+
+  /* Action Taken label row */
+  .action-taken-label {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #333;
+    font-style: italic;
+  }
+
+  /* Weekly/Monthly Summary */
+  .summary-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 0; }
+  .summary-field label { display: block; font-size: 11px; color: #333; margin-bottom: 4px; }
+  .summary-field .sub-hint { font-size: 10px; color: #aaa; font-style: italic; }
+  .summary-field textarea {
+    width: 100%; border: none; outline: none; font-size: 12px; color: #555;
+    resize: none; min-height: 40px; background: transparent; font-family: Arial, sans-serif;
+  }
+
+  /* Upload field */
+  .upload-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .upload-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .upload-field .upload-placeholder { font-size: 11px; color: #aaa; }
+
+  /* ── THANK YOU BANNER ── */
+  .thank-you-banner {
+    background: #c8e6c9; color: #2e7d32;
+    padding: 6px 10px; font-size: 12px; font-weight: bold;
+    border: 1px solid #a5d6a7; margin-top: 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer-logo { border: 1px solid #ddd; padding: 12px 10px; text-align: center; border-top: none; }
+  .powered-by { font-size: 10px; color: #aaa; margin-bottom: 8px; }
+  .powered-by a { color: #e07b39; text-decoration: none; font-size: 10px; }
+  .stc-logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .stc-icon { width: 52px; height: 52px; }
+  .stc-text { font-size: 22px; font-weight: bold; color: #222; }
+
+  /* ── BOTTOM BUTTONS ── */
+  .bottom-bar { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 14px 16px; background: #fff; }
+  .btn-draft { border: 1px solid #aaa; background: #fff; padding: 8px 20px; font-size: 13px; cursor: pointer; border-radius: 3px; color: #333; display: flex; align-items: center; gap: 6px; }
+  .btn-submit { background: #e07b39; border: none; color: #fff; padding: 8px 22px; font-size: 13px; cursor: pointer; border-radius: 3px; display: flex; align-items: center; gap: 6px; }
+  .info-icon { color: #aaa; font-size: 14px; cursor: pointer; }
+
+  /* divider between stacked summary fields */
+  .summary-divider { border: none; border-top: 1px solid #ddd; margin: 0; }
+</style>
+</head>
+<body>
+<div class="form-wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#e07b39">
+        <ellipse cx="50" cy="20" rx="6" ry="14" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(45 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(90 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(135 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(180 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(225 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(270 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(315 50 50)" opacity="0.9"/>
+      </g>
+      <path d="M50 58 C50 58 38 50 38 43 C38 38 43 35 50 42 C57 35 62 38 62 43 C62 50 50 58 50 58Z" fill="#fff" opacity="0.95"/>
+    </svg>
+    <div class="logo-text">WALiKU</div>
+  </div>
+
+  <!-- GENERAL INFORMATION -->
+  <div class="gen-info-label">General Information</div>
+  <div class="gen-info-sub">(Auto-filled based on Power Bi Query Parameters)</div>
+  <div class="fields-grid">
+    <div class="field-cell"><label>Academic year</label><input type="text"/></div>
+    <div class="field-cell"><label>District</label><input type="text"/></div>
+    <div class="field-cell"><label>Zone</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of School</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of the Grade</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of the Class</label><input type="text"/></div>
+    <div class="field-cell"><label>Learner ID</label><input type="text"/></div>
+    <div class="field-cell"><label>Learner Name</label><input type="text"/></div>
+    <div class="field-cell">
+      <label>Assessment Date</label>
+      <div class="date-row"><input type="text" value="2026-06-02" style="flex:1;"/><span class="refresh-icon">↺</span></div>
+    </div>
+    <div class="field-cell">
+      <span class="required-star">*</span>
+      <label>Teacher Name</label>
+      <div class="hint-text">Find your name from the list below. Select 'Teacher not found' if you do not find it.</div>
+    </div>
+  </div>
+
+  <!-- RISK CONTEXT -->
+  <div class="section-header"><span class="arrow">&#9660;</span> Risk Context (Auto-filled based on Power Bi Query Parameters)</div>
+  <div class="risk-inner">
+    <div class="risk-sub-label">Auto-filled based on Power Bi Query Parameters</div>
+    <div class="field-group">
+      <legend>Risk Type <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="riskType"/> Dropout Risk</div>
+      <div class="radio-option"><input type="radio" name="riskType"/> Repetition Risk</div>
+      <div class="radio-option"><input type="radio" name="riskType"/> Chronic Absenteeism</div>
+    </div>
+    <div class="field-group">
+      <legend>Risk Level <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> Low</div>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> Medium</div>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> High</div>
+    </div>
+    <div class="text-input-field">
+      <label>Date Risk Identified <span style="color:red">*</span></label>
+      <div class="date-row"><input type="text" placeholder="yyyy-mm-dd" style="flex:1;"/><span class="refresh-icon">↺</span></div>
+    </div>
+    <div class="text-input-field">
+      <label>Key Risk Factors (optional)</label>
+      <input type="text" placeholder="e.g., Poor attendance, sudden decline, low marks"/>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="section-header"><span class="arrow">&#9660;</span> Activity</div>
+  <div class="activity-inner">
+    <div class="field-group">
+      <legend>Which activity do you want to perform? <span style="color:red">*</span></legend>
+      <div class="radio-option">
+        <input type="radio" name="activity" id="act1" value="predictive" onchange="showSubForm(this.value)"/>
+        <label for="act1" style="font-size:12px;font-weight:normal;color:#333;cursor:pointer;">Provide Feedback on Predictive Outcomes</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" name="activity" id="act2" value="action" onchange="showSubForm(this.value)"/>
+        <label for="act2" style="font-size:12px;font-weight:normal;color:#333;cursor:pointer;">Record Action Taken for "At-Risk" Student</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" name="activity" id="act3" value="followup" onchange="showSubForm(this.value)"/>
+        <label for="act3" style="font-size:12px;font-weight:normal;color:#333;cursor:pointer;">Record Follow-Up Action</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SUB-FORM 1: Feedback on Prediction Accuracy
+       ═══════════════════════════════════════════════════ -->
+  <div id="form-predictive" class="dynamic-section">
+    <div class="section-header-orange"><span class="arrow">&#9660;</span> Feedback on Prediction Accuracy</div>
+
+    <div style="padding:8px 10px; border:1px solid #ddd; border-top:none;">
+
+      <!-- Info banner -->
+      <div class="info-banner">
+        <strong>This New Group Achieves:</strong><br/>
+        <div class="check-item">Captures human validation of AI predictions</div>
+        <div class="check-item">Helps detect blind spots in the data</div>
+        <div class="check-item">Feedback loops help to improve model performance using structured disagreement reasons.</div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="field-group">
+        <legend>Do you agree with the predicted risk level for this student? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="q1"/> Yes</div>
+        <div class="radio-option"><input type="radio" name="q1"/> No</div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="textarea-field">
+        <label>Are there any important student factors not captured by the system?</label>
+        <span class="sub-hint">Examples: home situation, recent illness, behaviour issues</span>
+        <textarea></textarea>
+        <span class="edit-icon">&#9998;</span>
+      </div>
+
+      <!-- Q3 -->
+      <div class="field-group">
+        <legend>Rate your confidence in the prediction (0 = not confident, 10 = very confident) <span style="color:red">*</span></legend>
+        <input type="text" style="width:100%;border:none;border-bottom:1px solid #ddd;outline:none;font-size:12px;padding:4px 0;"/>
+      </div>
+
+      <!-- Q4 -->
+      <div class="field-group">
+        <legend>Do you feel additional data is needed to improve predictions? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="q4"/> Yes</div>
+        <div class="radio-option"><input type="radio" name="q4"/> No</div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="field-group">
+        <legend>Was the prediction helpful for deciding on an intervention? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="q5"/> Yes</div>
+        <div class="radio-option"><input type="radio" name="q5"/> No</div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="textarea-field">
+        <label>Any comments or suggestions to improve prediction usefulness</label>
+        <textarea></textarea>
+        <span class="edit-icon">&#9998;</span>
+      </div>
+
+    </div>
+
+    <div class="thank-you-banner">Thank you for your time</div>
+    <div class="footer-logo">
+      <div class="powered-by">Powered by <a href="#">WalikuT4DTeam@SavetheChildren</a></div>
+      <div class="stc-logo">
+        <svg class="stc-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#e02020"/>
+          <circle cx="50" cy="28" r="10" fill="#fff"/>
+          <path d="M30 75 Q50 50 70 75" fill="#fff"/>
+          <line x1="50" y1="38" x2="50" y2="62" stroke="#fff" stroke-width="5"/>
+          <line x1="32" y1="50" x2="68" y2="50" stroke="#fff" stroke-width="5"/>
+        </svg>
+        <div class="stc-text">Save the Children</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SUB-FORM 2: Action Taken
+       ═══════════════════════════════════════════════════ -->
+  <div id="form-action" class="dynamic-section">
+    <div class="section-header-orange"><span class="arrow">&#9660;</span> Action Taken</div>
+
+    <div style="padding:8px 10px; border:1px solid #ddd; border-top:none;">
+
+      <div class="action-taken-label">Action Taken</div>
+
+      <!-- Action Type -->
+      <div class="field-group" style="margin-top:8px;">
+        <legend>Action Type <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="actionType"/> Extra tutoring session</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Remedial learning assigned</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Counseling session</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Attendance monitoring plan</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Daily check-in assigned</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Psychosocial support</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Phone call with parent</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Parent meeting in school</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Academic performance review</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Student profile verification</div>
+        <div class="radio-option"><input type="radio" name="actionType"/> Escalation to head teacher</div>
+      </div>
+
+      <!-- Describe action taken -->
+      <div class="textarea-field">
+        <label>Describe the action taken</label>
+        <textarea style="min-height:52px;"></textarea>
+        <span class="edit-icon">&#9998;</span>
+      </div>
+
+      <!-- Date Action Was Taken -->
+      <div class="field-group">
+        <legend>Date Action Was Taken <span style="color:red">*</span></legend>
+        <div class="date-row">
+          <input type="text" placeholder="yyyy-mm-dd" style="flex:1;border:none;outline:none;font-size:12px;color:#aaa;"/>
+          <span class="refresh-icon">↺</span>
+        </div>
+      </div>
+
+      <!-- Who performed -->
+      <div class="field-group">
+        <legend>Who performed this action? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="performer"/> Teacher</div>
+        <div class="radio-option"><input type="radio" name="performer"/> Head Teacher</div>
+        <div class="radio-option"><input type="radio" name="performer"/> School Administrator</div>
+      </div>
+
+      <!-- How was student engaged -->
+      <div class="field-group">
+        <legend>How was the student engaged? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="engagement"/> In-class discussion</div>
+        <div class="radio-option"><input type="radio" name="engagement"/> Call to parent</div>
+        <div class="radio-option"><input type="radio" name="engagement"/> Meeting with student</div>
+        <div class="radio-option"><input type="radio" name="engagement"/> Parent invited to school</div>
+      </div>
+
+      <!-- Was action completed -->
+      <div class="field-group">
+        <legend>Was the action successfully completed? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="completed"/> Yes</div>
+        <div class="radio-option"><input type="radio" name="completed"/> No</div>
+      </div>
+
+      <!-- Time spent -->
+      <div class="field-group">
+        <legend>Time spent (minutes)</legend>
+        <input type="text" style="width:100%;border:none;outline:none;font-size:12px;padding:2px 0;"/>
+      </div>
+
+      <!-- Upload photo -->
+      <div class="upload-field">
+        <label>Upload an optional supporting photo</label>
+        <div class="date-row">
+          <span class="upload-placeholder">Click here to upload file.. (&lt; 10MB)</span>
+          <span class="refresh-icon" style="margin-left:auto;">↺</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Weekly / Monthly Summary -->
+    <div class="section-header-orange"><span class="arrow">&#9660;</span> Weekly / Monthly Summary</div>
+    <div style="border:1px solid #ddd; border-top:none;">
+      <div class="summary-field">
+        <label>Number of students followed-up this week</label>
+        <textarea style="min-height:32px;"></textarea>
+      </div>
+      <hr class="summary-divider"/>
+      <div class="summary-field">
+        <label>Number of successful interventions</label>
+        <textarea style="min-height:32px;"></textarea>
+      </div>
+      <hr class="summary-divider"/>
+      <div class="summary-field" style="position:relative;">
+        <label>Key Barriers Faced</label>
+        <span class="sub-hint">Give short summary of issues faced</span>
+        <textarea style="min-height:52px;"></textarea>
+        <span class="edit-icon">&#9998;</span>
+      </div>
+      <hr class="summary-divider"/>
+      <div class="summary-field">
+        <label>New Patterns Observed</label>
+        <textarea style="min-height:32px;"></textarea>
+      </div>
+    </div>
+
+    <div class="thank-you-banner">Thank you for your time</div>
+    <div class="footer-logo">
+      <div class="powered-by">Powered by <a href="#">WalikuT4DTeam@SavetheChildren</a></div>
+      <div class="stc-logo">
+        <svg class="stc-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#e02020"/>
+          <circle cx="50" cy="28" r="10" fill="#fff"/>
+          <path d="M30 75 Q50 50 70 75" fill="#fff"/>
+          <line x1="50" y1="38" x2="50" y2="62" stroke="#fff" stroke-width="5"/>
+          <line x1="32" y1="50" x2="68" y2="50" stroke="#fff" stroke-width="5"/>
+        </svg>
+        <div class="stc-text">Save the Children</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SUB-FORM 3: Follow-Up Assessment
+       ═══════════════════════════════════════════════════ -->
+  <div id="form-followup" class="dynamic-section">
+    <div class="section-header-orange"><span class="arrow">&#9660;</span> Follow-Up Assessment</div>
+
+    <div style="padding:8px 10px; border:1px solid #ddd; border-top:none;">
+
+      <!-- Follow-up Date -->
+      <div class="field-group">
+        <legend>Follow-up Date <span style="color:red">*</span></legend>
+        <div class="date-row">
+          <input type="text" placeholder="yyyy-mm-dd" style="flex:1;border:none;outline:none;font-size:12px;color:#aaa;"/>
+          <span class="refresh-icon">↺</span>
+        </div>
+      </div>
+
+      <!-- Did situation improve -->
+      <div class="field-group">
+        <legend>Did the student's situation improve? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="improve"/> Improved</div>
+        <div class="radio-option"><input type="radio" name="improve"/> Partially Improved</div>
+        <div class="radio-option"><input type="radio" name="improve"/> No Change</div>
+      </div>
+
+      <!-- Observed change in behaviour -->
+      <div class="field-group">
+        <legend>Observed change in student behavior</legend>
+        <div class="radio-option"><input type="radio" name="behaviour"/> More attentive</div>
+        <div class="radio-option"><input type="radio" name="behaviour"/> More engaged</div>
+        <div class="radio-option"><input type="radio" name="behaviour"/> No change</div>
+      </div>
+
+      <!-- Attendance Improvement -->
+      <div class="field-group">
+        <legend>Attendance Improvement (%)</legend>
+        <input type="text" style="width:100%;border:none;outline:none;font-size:12px;padding:2px 0;"/>
+      </div>
+
+      <!-- Did risk change -->
+      <div class="field-group">
+        <legend>Did repetition/dropout risk change?</legend>
+        <div class="radio-option"><input type="radio" name="riskChange"/> Risk reduced</div>
+        <div class="radio-option"><input type="radio" name="riskChange"/> No change</div>
+        <div class="radio-option"><input type="radio" name="riskChange"/> Risk increased</div>
+      </div>
+
+      <!-- Follow-up Comments -->
+      <div class="textarea-field">
+        <label>Follow-up Comments</label>
+        <textarea style="min-height:60px;"></textarea>
+        <span class="edit-icon">&#9998;</span>
+      </div>
+
+      <!-- Is another action needed -->
+      <div class="field-group">
+        <legend>Is another action needed? <span style="color:red">*</span></legend>
+        <div class="radio-option"><input type="radio" name="anotherAction"/> Yes</div>
+        <div class="radio-option"><input type="radio" name="anotherAction"/> No</div>
+      </div>
+
+    </div>
+
+    <div class="thank-you-banner">Thank you for your time</div>
+    <div class="footer-logo">
+      <div class="powered-by">Powered by <a href="#">WalikuT4DTeam@SavetheChildren</a></div>
+      <div class="stc-logo">
+        <svg class="stc-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#e02020"/>
+          <circle cx="50" cy="28" r="10" fill="#fff"/>
+          <path d="M30 75 Q50 50 70 75" fill="#fff"/>
+          <line x1="50" y1="38" x2="50" y2="62" stroke="#fff" stroke-width="5"/>
+          <line x1="32" y1="50" x2="68" y2="50" stroke="#fff" stroke-width="5"/>
+        </svg>
+        <div class="stc-text">Save the Children</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEFAULT FOOTER (shown when no activity selected) -->
+  <div id="default-footer">
+    <div class="thank-you-banner">Thank you for your time</div>
+    <div class="footer-logo">
+      <div class="powered-by">Powered by <a href="#">WalikuT4DTeam@SavetheChildren</a></div>
+      <div class="stc-logo">
+        <svg class="stc-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#e02020"/>
+          <circle cx="50" cy="28" r="10" fill="#fff"/>
+          <path d="M30 75 Q50 50 70 75" fill="#fff"/>
+          <line x1="50" y1="38" x2="50" y2="62" stroke="#fff" stroke-width="5"/>
+          <line x1="32" y1="50" x2="68" y2="50" stroke="#fff" stroke-width="5"/>
+        </svg>
+        <div class="stc-text">Save the Children</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM BUTTONS -->
+  <div class="bottom-bar">
+    <button class="btn-draft">&#9998; Save Draft</button>
+    <span class="info-icon">&#9432;</span>
+    <button class="btn-submit">&#10004; Submit</button>
+  </div>
+
+</div>
+
+<script>
+  function showSubForm(value) {
+    // Hide all sub-forms and default footer
+    document.querySelectorAll('.dynamic-section').forEach(el => el.classList.remove('active'));
+    document.getElementById('default-footer').style.display = 'none';
+
+    // Show selected sub-form
+    const map = {
+      predictive: 'form-predictive',
+      action: 'form-action',
+      followup: 'form-followup'
+    };
+    if (map[value]) {
+      document.getElementById(map[value]).classList.add('active');
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WALiKU – Screen 3: Action Taken</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f0f0; display: flex; justify-content: center; padding: 20px; }
+  .form-wrapper { background: #fff; width: 560px; border: 1px solid #ccc; }
+  .header { background: #f5f5f5; border: 1px solid #ddd; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 16px; gap: 10px; }
+  .logo-icon { width: 72px; height: 72px; }
+  .logo-text { font-size: 26px; font-weight: bold; letter-spacing: 3px; color: #8dc63f; }
+  .section-header { background: #d9e8f5; padding: 6px 10px; font-weight: bold; font-size: 13px; color: #1a5276; border-top: 1px solid #aac8e0; border-bottom: 1px solid #aac8e0; display: flex; align-items: center; gap: 6px; }
+  .section-header-orange { background: #fde8d8; padding: 6px 10px; font-weight: bold; font-size: 13px; color: #c0390b; border-top: 1px solid #f0b48a; border-bottom: 1px solid #f0b48a; display: flex; align-items: center; gap: 6px; }
+  .gen-info-label { background: #1a5276; color: #fff; padding: 5px 10px; font-weight: bold; font-size: 12px; }
+  .gen-info-sub { background: #1a5276; color: #cde; padding: 0 10px 5px; font-size: 10px; font-style: italic; }
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+  .field-cell { border: 1px solid #ddd; padding: 6px 8px; position: relative; }
+  .field-cell label { display: block; font-size: 10px; color: #555; margin-bottom: 2px; }
+  .field-cell input[type="text"] { width: 100%; border: none; outline: none; font-size: 12px; background: transparent; color: #222; }
+  .field-cell .hint-text { font-size: 10px; color: #e07b39; font-style: italic; margin-top: 2px; }
+  .required-star { color: red; font-size: 12px; position: absolute; top: 5px; right: 6px; }
+  .date-row { display: flex; align-items: center; gap: 6px; }
+  .refresh-icon { color: #555; font-size: 14px; }
+  .risk-inner { padding: 8px 10px; border: 1px solid #ddd; border-top: none; }
+  .risk-sub-label { font-size: 10px; color: #888; margin-bottom: 8px; font-style: italic; }
+  .field-group { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .field-group legend { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 6px; display: block; }
+  .radio-option { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 4px; color: #333; }
+  .radio-option input[type="radio"] { margin: 0; }
+  .radio-selected { font-weight: bold; color: #c0390b; }
+  .text-input-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .text-input-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .text-input-field input[type="text"] { width: 100%; border: none; outline: none; font-size: 12px; color: #aaa; }
+  .activity-inner { padding: 8px 10px; border: 1px solid #ddd; border-top: none; }
+  .subform-inner { padding: 8px 10px; border: 1px solid #ddd; border-top: none; }
+  .textarea-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .textarea-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .textarea-field textarea { width: 100%; border: none; outline: none; font-size: 12px; color: #555; resize: none; min-height: 52px; background: transparent; font-family: Arial, sans-serif; }
+  .edit-icon { position: absolute; bottom: 6px; right: 8px; color: #999; font-size: 13px; }
+  .action-taken-label { background: #f5f5f5; border: 1px solid #ddd; border-bottom: none; padding: 6px 10px; font-size: 11px; color: #333; font-style: italic; }
+  .upload-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 8px; position: relative; }
+  .upload-field label { display: block; font-size: 11px; font-weight: bold; color: #333; margin-bottom: 4px; }
+  .upload-field .upload-placeholder { font-size: 11px; color: #aaa; }
+  .summary-field { border: 1px solid #ddd; padding: 8px 10px; margin-bottom: 0; }
+  .summary-field label { display: block; font-size: 11px; color: #333; margin-bottom: 4px; }
+  .summary-field .sub-hint { font-size: 10px; color: #aaa; font-style: italic; }
+  .summary-field textarea { width: 100%; border: none; outline: none; font-size: 12px; color: #555; resize: none; min-height: 36px; background: transparent; font-family: Arial, sans-serif; }
+  .summary-divider { border: none; border-top: 1px solid #ddd; }
+  .thank-you-banner { background: #c8e6c9; color: #2e7d32; padding: 6px 10px; font-size: 12px; font-weight: bold; border: 1px solid #a5d6a7; }
+  .footer-logo { border: 1px solid #ddd; padding: 12px 10px; text-align: center; border-top: none; }
+  .powered-by { font-size: 10px; color: #aaa; margin-bottom: 8px; }
+  .powered-by a { color: #e07b39; text-decoration: none; }
+  .stc-logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .stc-icon { width: 52px; height: 52px; }
+  .stc-text { font-size: 22px; font-weight: bold; color: #222; }
+  .bottom-bar { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 14px 16px; }
+  .btn-draft { border: 1px solid #aaa; background: #fff; padding: 8px 20px; font-size: 13px; cursor: pointer; border-radius: 3px; color: #333; display: flex; align-items: center; gap: 6px; }
+  .btn-submit { background: #e07b39; border: none; color: #fff; padding: 8px 22px; font-size: 13px; cursor: pointer; border-radius: 3px; display: flex; align-items: center; gap: 6px; }
+  .info-icon { color: #aaa; font-size: 14px; }
+  .screen-label { background: #c0390b; color: #fff; text-align: center; padding: 4px; font-size: 11px; letter-spacing: 1px; }
+</style></head><body>
+<div class="form-wrapper">
+  <div class="screen-label">SCREEN 3 — Record Action Taken for "At-Risk" Student</div>
+
+  <div class="header">
+    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#e07b39">
+        <ellipse cx="50" cy="20" rx="6" ry="14" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(45 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(90 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(135 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(180 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(225 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(270 50 50)" opacity="0.9"/>
+        <ellipse cx="50" cy="20" rx="6" ry="14" transform="rotate(315 50 50)" opacity="0.9"/>
+      </g>
+      <path d="M50 58 C50 58 38 50 38 43 C38 38 43 35 50 42 C57 35 62 38 62 43 C62 50 50 58 50 58Z" fill="#fff" opacity="0.95"/>
+    </svg>
+    <div class="logo-text">WALiKU</div>
+  </div>
+
+  <div class="gen-info-label">General Information</div>
+  <div class="gen-info-sub">(Auto-filled based on Power Bi Query Parameters)</div>
+  <div class="fields-grid">
+    <div class="field-cell"><label>Academic year</label><input type="text"/></div>
+    <div class="field-cell"><label>District</label><input type="text"/></div>
+    <div class="field-cell"><label>Zone</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of School</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of the Grade</label><input type="text"/></div>
+    <div class="field-cell"><label>Name of the Class</label><input type="text"/></div>
+    <div class="field-cell"><label>Learner ID</label><input type="text"/></div>
+    <div class="field-cell"><label>Learner Name</label><input type="text"/></div>
+    <div class="field-cell">
+      <label>Assessment Date</label>
+      <div class="date-row"><input type="text" value="2026-06-02" style="flex:1;"/><span class="refresh-icon">↺</span></div>
+    </div>
+    <div class="field-cell">
+      <span class="required-star">*</span>
+      <label>Teacher Name</label>
+      <div class="hint-text">Find your name from the list below. Select 'Teacher not found' if you do not find it.</div>
+    </div>
+  </div>
+
+  <div class="section-header"><span>&#9660;</span> Risk Context (Auto-filled based on Power Bi Query Parameters)</div>
+  <div class="risk-inner">
+    <div class="risk-sub-label">Auto-filled based on Power Bi Query Parameters</div>
+    <div class="field-group">
+      <legend>Risk Type <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="riskType"/> Dropout Risk</div>
+      <div class="radio-option"><input type="radio" name="riskType"/> Repetition Risk</div>
+      <div class="radio-option"><input type="radio" name="riskType"/> Chronic Absenteeism</div>
+    </div>
+    <div class="field-group">
+      <legend>Risk Level <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> Low</div>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> Medium</div>
+      <div class="radio-option"><input type="radio" name="riskLevel"/> High</div>
+    </div>
+    <div class="text-input-field">
+      <label>Date Risk Identified <span style="color:red">*</span></label>
+      <div class="date-row"><input type="text" placeholder="yyyy-mm-dd" style="flex:1;"/><span class="refresh-icon">↺</span></div>
+    </div>
+    <div class="text-input-field">
+      <label>Key Risk Factors (optional)</label>
+      <input type="text" placeholder="e.g., Poor attendance, sudden decline, low marks"/>
+    </div>
+  </div>
+
+  <!-- ACTIVITY — radio 2 selected -->
+  <div class="section-header"><span>&#9660;</span> Activity</div>
+  <div class="activity-inner">
+    <div class="field-group">
+      <legend>Which activity do you want to perform? <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="activity"/> Provide Feedback on Predictive Outcomes</div>
+      <div class="radio-option"><input type="radio" name="activity" checked/> <span class="radio-selected">Record Action Taken for "At-Risk" Student</span></div>
+      <div class="radio-option"><input type="radio" name="activity"/> Record Follow-Up Action</div>
+    </div>
+  </div>
+
+  <!-- SUB-FORM: Action Taken -->
+  <div class="section-header-orange"><span>&#9660;</span> Action Taken</div>
+  <div class="subform-inner">
+    <div class="action-taken-label">Action Taken</div>
+    <div class="field-group" style="margin-top:8px;">
+      <legend>Action Type <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="actionType"/> Extra tutoring session</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Remedial learning assigned</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Counseling session</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Attendance monitoring plan</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Daily check-in assigned</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Psychosocial support</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Phone call with parent</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Parent meeting in school</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Academic performance review</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Student profile verification</div>
+      <div class="radio-option"><input type="radio" name="actionType"/> Escalation to head teacher</div>
+    </div>
+    <div class="textarea-field">
+      <label>Describe the action taken</label>
+      <textarea></textarea>
+      <span class="edit-icon">&#9998;</span>
+    </div>
+    <div class="field-group">
+      <legend>Date Action Was Taken <span style="color:red">*</span></legend>
+      <div class="date-row">
+        <input type="text" placeholder="yyyy-mm-dd" style="flex:1;border:none;outline:none;font-size:12px;color:#aaa;"/>
+        <span class="refresh-icon">↺</span>
+      </div>
+    </div>
+    <div class="field-group">
+      <legend>Who performed this action? <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="performer"/> Teacher</div>
+      <div class="radio-option"><input type="radio" name="performer"/> Head Teacher</div>
+      <div class="radio-option"><input type="radio" name="performer"/> School Administrator</div>
+    </div>
+    <div class="field-group">
+      <legend>How was the student engaged? <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="engagement"/> In-class discussion</div>
+      <div class="radio-option"><input type="radio" name="engagement"/> Call to parent</div>
+      <div class="radio-option"><input type="radio" name="engagement"/> Meeting with student</div>
+      <div class="radio-option"><input type="radio" name="engagement"/> Parent invited to school</div>
+    </div>
+    <div class="field-group">
+      <legend>Was the action successfully completed? <span style="color:red">*</span></legend>
+      <div class="radio-option"><input type="radio" name="completed"/> Yes</div>
+      <div class="radio-option"><input type="radio" name="completed"/> No</div>
+    </div>
+    <div class="field-group">
+      <legend>Time spent (minutes)</legend>
+      <input type="text" style="width:100%;border:none;outline:none;font-size:12px;padding:2px 0;"/>
+    </div>
+    <div class="upload-field">
+      <label>Upload an optional supporting photo</label>
+      <div class="date-row">
+        <span class="upload-placeholder">Click here to upload file.. (&lt; 10MB)</span>
+        <span class="refresh-icon" style="margin-left:auto;">↺</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly / Monthly Summary -->
+  <div class="section-header-orange"><span>&#9660;</span> Weekly / Monthly Summary</div>
+  <div style="border:1px solid #ddd; border-top:none;">
+    <div class="summary-field"><label>Number of students followed-up this week</label><textarea></textarea></div>
+    <hr class="summary-divider"/>
+    <div class="summary-field"><label>Number of successful interventions</label><textarea></textarea></div>
+    <hr class="summary-divider"/>
+    <div class="summary-field" style="position:relative;">
+      <label>Key Barriers Faced</label>
+      <span class="sub-hint">Give short summary of issues faced</span>
+      <textarea style="min-height:52px;"></textarea>
+      <span class="edit-icon">&#9998;</span>
+    </div>
+    <hr class="summary-divider"/>
+    <div class="summary-field"><label>New Patterns Observed</label><textarea></textarea></div>
+  </div>
+
+  <div class="thank-you-banner">Thank you for your time</div>
+  <div class="footer-logo">
+    <div class="powered-by">Powered by <a href="#">WalikuT4DTeam@SavetheChildren</a></div>
+    <div class="stc-logo">
+      <svg class="stc-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#e02020"/>
+        <circle cx="50" cy="28" r="10" fill="#fff"/>
+        <path d="M30 75 Q50 50 70 75" fill="#fff"/>
+        <line x1="50" y1="38" x2="50" y2="62" stroke="#fff" stroke-width="5"/>
+        <line x1="32" y1="50" x2="68" y2="50" stroke="#fff" stroke-width="5"/>
+      </svg>
+      <div class="stc-text">Save the Children</div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-draft">&#9998; Save Draft</button>
+    <span class="info-icon">&#9432;</span>
+    <button class="btn-submit">&#10004; Submit</button>
+  </div>
+</div>
+</body></html>
